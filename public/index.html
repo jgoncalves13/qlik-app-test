@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Ejemplo de Integración con Qlik-Embed</title>
+    <title>Ejemplo de Integración con Qlik-Embed Web Components</title>
+    <!-- Incluye la librería embed-web-components -->
     <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components@1/dist/index.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
@@ -13,9 +14,10 @@
     </style>
 </head>
 <body>
-    <h1>Integración de Qlik Sense con Qlik-Embed</h1>
+    <h1>Integración de Qlik Sense con Qlik-Embed Web Components</h1>
     <button onclick="embedQlikApp()">Obtener Token y Cargar App</button>
     <div id="status-message" class="mensaje"></div>
+    <!-- Aquí se incrustará la aplicación -->
     <div id="qlik-app-container"></div>
 
     <script>
@@ -48,29 +50,20 @@
 
             statusMessage.textContent = 'Token obtenido. Incrustando aplicación...';
             statusMessage.className = 'mensaje exito';
+
             const appContainer = document.getElementById('qlik-app-container');
 
-            const embedConfig = {
-                host: 'keyruspt.eu.qlikcloud.com',
-                appId: '40de9651-2036-42be-a6e0-86ec38362ad0', // Reemplaza con tu App ID
-                sheetId: 'XwLsPUk', // Reemplaza con tu Sheet ID
-                embed: appContainer,
-                oauth2: { accessToken: accessToken },
-                webIntegrationId: 'F5lgGsalXWNob9SEj1n-PuH-l93y9Ojk', // Reemplaza con tu Web Integration ID
-                theme: 'horizon'
-            };
+            // Aquí se crea y configura el componente web
+            const qlikApp = document.createElement('qlik-app');
+            qlikApp.setAttribute('host', 'keyruspt.eu.qlikcloud.com');
+            qlikApp.setAttribute('app-id', '40de9651-2036-42be-a6e0-86ec38362ad0');
+            qlikApp.setAttribute('sheet-id', 'XwLsPUk');
+            qlikApp.setAttribute('oauth2-access-token', accessToken);
+            qlikApp.setAttribute('web-integration-id', '3w8_BslOS_V8LHD6hVHwsNHaRkK_Mm5s');
+            qlikApp.setAttribute('theme', 'horizon');
+            qlikApp.setAttribute('mode', 'analysis'); // Puedes cambiar a 'edit' o 'print'
 
-            const qlikEmbed = new QlikEmbed();
-            qlikEmbed.embed(embedConfig);
-
-            qlikEmbed.on('embedded', () => {
-                statusMessage.textContent = '¡Aplicación incrustada correctamente!';
-            });
-
-            qlikEmbed.on('error', (error) => {
-                statusMessage.textContent = `Error al incrustar: ${error.message}`;
-                statusMessage.className = 'mensaje error';
-            });
+            appContainer.appendChild(qlikApp);
         }
     </script>
 </body>
